@@ -81,6 +81,13 @@ app.use(function clientErrorHandler(err, req, res, next) {
 })
 
 
+/** ROUTES */
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+// router path: "/posts"
+app.use('/posts', postsRouter);
+
+
 /*
 ERROR HANDLING
 */
@@ -94,13 +101,6 @@ app.use((err, req, res, next) => {
             }
         })
 })
-
-
-/** ROUTES */
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-// router path: "/posts"
-app.use('/posts', postsRouter);
 
 
 /** EXPORT PATH */
