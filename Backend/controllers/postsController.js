@@ -20,7 +20,7 @@ exports.getPosts = async (req, res, next) => {
 
 exports.addPost = async (req, res, next) => {
     try {
-        // if (isEmpty(req.body)) {
+        /// if (isEmpty(req.body)) {
         //     const error = new Error ("INVALID REQUEST MESSAGE")
         //     error.status = 400;
         //     error.stack = null
