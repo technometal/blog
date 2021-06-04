@@ -1,14 +1,15 @@
-const low = require('lowdb');
-const FileSync = require("lowdb/adapters/FileSync");
-const adapter = new FileSync ("data/db.json");
-const db = low(adapter);
-const isEmpty = require("lodash.isempty");
-const { UnavailableForLegalReasons } = require('http-errors');
+// const low = require('lowdb');
+// const FileSync = require("lowdb/adapters/FileSync");
+// const adapter = new FileSync ("data/db.json");
+// const db = low(adapter);
+// const isEmpty = require("lodash.isempty");
+const Post = require("../models/Post");
+const createError = require("http-errors");
 
 
-exports.getPosts = (req, res, next) => {
+exports.getPosts = async (req, res, next) => {
     try {
-        const posts = db.get("posts").value();
+        const posts = await Post.find();
         res.status(200).send(posts);
     } catch (error) {
         console.log(error);
@@ -17,20 +18,21 @@ exports.getPosts = (req, res, next) => {
 }
 
 
-exports.addPost = (req, res, next) => {
+exports.addPost = async (req, res, next) => {
     try {
-        if (isEmpty(req.body)) {
-            const error = new Error ("INVALID REQUEST MESSAGE")
-            error.status = 400;
-            error.stack = null
-            next(error);
-        } else {
-            const post = req.body;
-            console.log(post);
-            db.get("posts").push(post).last().assign({id: Date.now().toString()}).write()
-            res.status(200).send(post);
-            console.log(post);
-        }
+        // if (isEmpty(req.body)) {
+        //     const error = new Error ("INVALID REQUEST MESSAGE")
+        //     error.status = 400;
+        //     error.stack = null
+        //     next(error);
+        // } else {
+            const post = new Post(req.body);
+            //console.log(post);
+            await post.save();
+            //db.get("posts").push(post).last().assign({id: Date.now().toString()}).write()
+            res.status(200).send(post);// sends it to the home page
+            //console.log(post);
+        //}
     } catch (error) {
         console.log(error);
         next(error);
@@ -38,29 +40,28 @@ exports.addPost = (req, res, next) => {
 }
 
 
-exports.updatePost = (req, res, next) => {
+exports.updatePost = async (req, res, next) => {
     try {
-        let id = req.body.id;
-        const post = db.get('posts').map((post) => {
-           if (post.id === id) {
-                post.post = req.body.post
-           }
-           return post;
+        //let id = req.body.id;
+        const post = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!post) {
+      throw new createError.NotFound();
         }
-        ).write();
-        res.send(post);
-    } catch (error) {
+        res.status(200).send(post);
+        } catch (error) {
         console.log(error);
         next(error);
         }
 }
 
 
-exports.deletePost = (req, res, next) => {
+exports.deletePost = async (req, res, next) => {
     try {
-        const inputId = req.params.id
-        db.get("posts").remove({id: inputId}).write();
-        res.status(200).send("Success");
+        const post = await Post.findByIdAndDelete(req.params.id,req.body, { new: true });
+        if(!order) {
+            throw new createError.NotFound();
+            res.status(200).send("Success");
+        }
     } catch (error) {
         console.log(error);
         next(error);

@@ -11,7 +11,7 @@
     "express": "~4.16.1",
     "lodash.isempty": "^4.4.0",
     "lowdb": "^1.0.0",
-    "mongoose": "^5.12.11",
+    "mongoose": "^5.12.12",
     "morgan": "~1.9.1"
   },
   "devDependencies": {

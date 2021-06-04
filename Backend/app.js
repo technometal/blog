@@ -4,12 +4,15 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+// import mongoose library
+const mongoose = require('mongoose');
+
 
 /*
 DEPENDENCIES FOR LOWDB
 */
-const low = require("lowdb");
-const FileSync = require("lowdb/adapters/FileSync")
+//const low = require("lowdb");
+//const FileSync = require("lowdb/adapters/FileSync")
 
 
 /** ROUTERS */
@@ -37,14 +40,33 @@ app.use(logger('dev'));
  *  SET UP THE LOWDB DATABASE
  */
 //initialize the adapter to mock db file
-const adapter = new FileSync("data/db.json");
+//const adapter = new FileSync("data/db.json");
 // initialize mock db using lowdb
-const db = low(adapter);
+//const dbMock = low(adapter);
 // add default entries to the database
-db.defaults ({
-    posts: [],
-    users: []
-}).write();
+// dbMock.defaults ({
+//     posts: [],
+//     users: []
+// }).write();
+
+/**SETTING UP MONGODB CONNECTION */
+// mongodb+srv://Hertiberto:<password>@cluster0.rnomd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+mongoose.connect('mongodb+srv://Hertiberto:hrh4e1974@cluster0.rnomd.mongodb.net/blog?retryWrites=true&w=majority', 
+{
+    useNewUrlParser: true,
+    useCreateIndex: true, 
+    useUnifiedTopology: true
+});
+
+
+// CONNECT
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+  // we're connected!
+  console.log("successfully connected to the database");
+});
+
 
 /** REQUEST PARSERS */
 app.use(express.json());
