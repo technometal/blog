@@ -22,7 +22,7 @@ const PostSchema = new Schema(
             type: String,
             required: true
         },
-        email: {
+        content: {
             type: String,
             required: true
         }

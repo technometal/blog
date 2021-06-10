@@ -30,6 +30,7 @@ const App = (props) => {
   const getPosts = async () => {
     const postsdata = await axios.get("http://localhost:3001/posts")
     console.log(postsdata.data);
+
     setPosts(postsdata.data);
   }
 
@@ -42,8 +43,12 @@ const App = (props) => {
   const addNewPost = (post) => {
     post.id = posts.length + 1;
     post.slug = getNewSlugFromTitle(post.title);
-    setPosts([...posts, post]);
-    setFlashMessage(`saved`);
+    if(post.title.length < 5) {
+      alert ("post not accepted, keep trying")
+    } else {
+      setPosts([...posts, post]);
+      setFlashMessage(`saved`);
+    }
   };
 
   const updatePost = (post) => {

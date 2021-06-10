@@ -1,4 +1,5 @@
 /** EXTERNAL DEPENDENCIES */
+const { body, validationResult } = require('express-validator');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -28,6 +29,12 @@ CORS Security for the clients website to disable same-origin-policy for only thi
 */
 // import of the security middleware
 const { setCors } = require("./middleware/security")
+// import of the validator middleware
+const {validateInputs} = require('./middleware/validator')
+const postValidationRules = require('./lib/validation/postRules')
+const userValidationRules = require('./lib/validation/-userRules-')
+
+
 
 /** INIT */
 const app = express();
@@ -91,7 +98,20 @@ app.use(function clientErrorHandler(err, req, res, next) {
 
 /** ROUTES */
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// app.use('/users', usersRouter);
+app.post('/users',
+  body('email').isEmail(), 
+  body('firstName').isString(),
+  body('lastName').isString(),
+  /*TODO -> firstName, lastName, password should be a mimimum of 8 characters*/
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    // THERE IS NO Mongo creation happening!
+    res.json({ message: "it create a user" });
+  });
 // router path: "/posts"
 app.use('/posts', postsRouter);
 

@@ -5,6 +5,7 @@
 // const isEmpty = require("lodash.isempty");
 const Post = require("../models/Post");
 const createError = require("http-errors");
+const { validationResult } = require("express-validator");
 
 
 exports.getPosts = async (req, res, next) => {
