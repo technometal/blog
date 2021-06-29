@@ -29,9 +29,14 @@ exports.addPost = async (req, res, next) => {
         // } else {
             const post = new Post(req.body);
             //console.log(post);
+            const token = user.generateAuthToken();
+            console.log(token);
             await post.save();
             //db.get("posts").push(post).last().assign({id: Date.now().toString()}).write()
-            res.status(200).send(post);// sends it to the home page
+            const data = user.getPublicFields();
+            res.status(200)
+            .header("x-auth", token)
+            .send(post);// sends it to the home page
             //console.log(post);
         //}
     } catch (error) {
@@ -67,4 +72,30 @@ exports.deletePost = async (req, res, next) => {
         console.log(error);
         next(error);
     }
+}
+
+
+/* SIGNING IN */
+exports.loginUser = async(req, res, next) => {
+  // GET EMAIL AND PASSWORD FROM THE REQUEST
+  const email = req.body.email;
+  const password = req.body.password;
+  try {
+    // FIND USER IN THE DATABASE
+    const user = await User.findOne({ email });
+    // CHECKING IF THE PASSWORD IS CORRECT
+    const valid = await user.checkPassword(password);
+    if(!valid) throw new createError.NotFound();
+
+    // RETRIEVE A TOKEN
+    const token = user.generateAuthToken();
+    const data = user.getPublicFields();
+
+    // RESPOND WITH TOKEN AND PUBLIC FIELDS
+    res.status(200)
+    .header("x-auth", token)
+    .send(data);
+  } catch (e) {
+    next(e);
+  }
 }

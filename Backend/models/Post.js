@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 
+
 // DECLARATION OF THE POST SCHEMA
 // PostSchema:
 // 1. slug: type: String,
@@ -28,6 +29,10 @@ const PostSchema = new Schema(
         }
     }
 );
+
+
+
+
 
 // CREATE AND EXPORT THE MODEL
 module.exports = mongoose.model("Post", PostSchema);

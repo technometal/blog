@@ -21,6 +21,11 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 // import the posts' router
 const postsRouter = require("./routes/posts")
+const User = require('./models/User');
+const userValidationRules = require('./lib/validation/userRules')
+
+// IMPORT THE CONFIG FILE
+const config = require("./config/configs");
 
 
 
@@ -32,8 +37,6 @@ const { setCors } = require("./middleware/security")
 // import of the validator middleware
 const {validateInputs} = require('./middleware/validator')
 const postValidationRules = require('./lib/validation/postRules')
-const userValidationRules = require('./lib/validation/-userRules-')
-
 
 
 /** INIT */
@@ -58,7 +61,7 @@ app.use(logger('dev'));
 
 /**SETTING UP MONGODB CONNECTION */
 // mongodb+srv://Hertiberto:<password>@cluster0.rnomd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
-mongoose.connect('mongodb+srv://Hertiberto:hrh4e1974@cluster0.rnomd.mongodb.net/blog?retryWrites=true&w=majority', 
+mongoose.connect(config.db, 
 {
     useNewUrlParser: true,
     useCreateIndex: true, 
@@ -98,7 +101,7 @@ app.use(function clientErrorHandler(err, req, res, next) {
 
 /** ROUTES */
 app.use('/', indexRouter);
-// app.use('/users', usersRouter);
+app.use('/users', usersRouter);
 app.post('/users',
   body('email').isEmail(), 
   body('firstName').isString(),
@@ -120,6 +123,7 @@ app.use('/posts', postsRouter);
 ERROR HANDLING
 */
 app.use((err, req, res, next) => {
+  console.log(err);
     // respond to the requestor with the error message
     // set response status to 500
     res.status(500).send (

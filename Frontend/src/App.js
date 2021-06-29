@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
@@ -11,6 +10,7 @@ import Posts from "./components/Posts";
 import Post from "./components/Post";
 import PostForm from "./components/PostForm";
 import NotFound from "./components/NotFound";
+import Login from "./components/Login";
 
 import "./App.css";
 
@@ -61,9 +61,9 @@ const App = (props) => {
   };
 
   return (
-    <Router>
       <div className="App">
         <Header />
+        
         {message && <Message type={message} />}
         <Switch>
           <Route exact path="/" render={() => <Posts posts={posts} />} />
@@ -90,6 +90,10 @@ const App = (props) => {
               />
             )}
           />
+
+          <Route path="/login" component={Login}/>
+
+          
           <Route
             path="/edit/:postSlug"
             render={(props) => {
@@ -106,8 +110,19 @@ const App = (props) => {
           <Route component={NotFound} />
         </Switch>
       </div>
-    </Router>
   );
 };
+
+// function App () {
+//   return (
+//   <div>
+//     <Switch>
+//       <Route path="/login" component={Login}/>
+//       <Route component={NotFound} />
+//     </Switch>
+//   </div>)
+
+// }
+
 
 export default App;
